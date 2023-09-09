@@ -1,8 +1,10 @@
-import React from "react";
 import styled from "styled-components";
 import "./global.css";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
+import MessageContext from "../context/MessageContext";
+import Loader from "./Loader";
+import SetAuthContext from "../context/SetAuthContext";
 
 const NavHeader = styled.div`
   width: 100%;
@@ -79,15 +81,48 @@ const UserLogo = styled.div`
 
 const NavBar = () => {
   const navigate = useNavigate();
+  const [loader, setLoader] = useState(false);
 
-  function handleClick(event) {
-    navigate("/Dashboard");
+  //set context to MessageContext
+  const { setMessage } = useContext(MessageContext);
+
+  //fetch context from SetDataContext
+  const { handleAuth, signOut, profileId } = useContext(SetAuthContext);
+
+  async function handleDashboard() {
+    if (profileId) {
+      navigate("/Dashboard");
+    } else {
+      await handleAuth(setLoader);
+      navigate("/Dashboard");
+    }
   }
+
+  function handleHome() {
+    navigate("/");
+  }
+
+  async function handleSignOut() {
+    setLoader(true);
+    if (profileId) {
+      navigate("/");
+      await signOut();
+      setLoader(false);
+      setMessage({
+        type: "success",
+        message: "You are Signed out!",
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    }
+  }
+
   return (
     <NavHeader>
       <NavLogo></NavLogo>
       <NavElementWrapper>
-        <NavElement>Home</NavElement>
+        <NavElement onClick={handleHome}>Home</NavElement>
         <NavElement>About</NavElement>
         <NavElement>FAQs</NavElement>
         <NavElement>Contact</NavElement>
@@ -95,11 +130,23 @@ const NavBar = () => {
       </NavElementWrapper>
       <ExtraElementWarapper>
         <ButtonConnect>
-          <button class="button-86" role="button">
-            Connect Wallet
-          </button>
+          {profileId ? (
+            <button onClick={handleSignOut} className="button-86" role="button">
+              {loader && <Loader />}
+              <span style={{ marginLeft: "5px" }}>Sign out</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => handleAuth(setLoader)}
+              className="button-86"
+              role="button"
+            >
+              {loader && <Loader />}
+              <span style={{ marginLeft: "5px" }}>Connect Wallet</span>
+            </button>
+          )}
         </ButtonConnect>
-        <UserLogo onClick={handleClick}>
+        <UserLogo onClick={handleDashboard}>
           <img src="/Avatar.svg" alt="Logo" />
         </UserLogo>
       </ExtraElementWarapper>

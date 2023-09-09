@@ -1,29 +1,21 @@
-import React from 'react'
-import styled from 'styled-components'
-import NavBar from './NavBar'
-
+import styled from "styled-components";
+import NavBar from "./NavBar";
 
 const Section = styled.div`
-    width: 100%;
-    height: 6561px;
-    background-image: url('/LandingPage2.svg');
-    background-repeat: no-repeat;
-    background-size: cover;    
-    `
-
-
-
+  width: 100%;
+  height: 6561px;
+  background-image: url("/LandingPage2.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+`;
 
 function Prototype() {
-
-  
   return (
     <>
-    <NavBar />
-    <Section>
-    </Section>
-    </>  
-    )
+      <NavBar />
+      <Section></Section>
+    </>
+  );
 }
 
-export default Prototype
+export default Prototype;

@@ -1,7 +1,10 @@
-import React from "react";
+import { useContext } from "react";
 import styled from "styled-components";
 import NavBar from "./NavBar";
 import About from "./About";
+import { Link } from "react-scroll";
+import SetAuthContext from "../context/SetAuthContext";
+import GetContractContext from "../context/GetContractContext";
 
 const Section = styled.div`
   width: 100%;
@@ -41,6 +44,22 @@ const WriteTitle = styled.div`
   line-height: normal;
   letter-spacing: 9px;
   //typography end
+`;
+
+const WriteWallet = styled.div`
+  padding-top: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #224e34;
+  text-align: center;
+  text-shadow: 0px 4px 5px rgba(0, 0, 0, 0.25);
+  font-family: "inter", sans-serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: 3px;
 `;
 
 const WriteBody = styled.div`
@@ -139,6 +158,9 @@ const PlayNowButton = styled.button`
 `;
 
 function Hero() {
+  const { addr } = useContext(SetAuthContext);
+  const { ownerAddress } = useContext(GetContractContext);
+
   return (
     <>
       <NavBar />
@@ -148,10 +170,26 @@ function Hero() {
         <BackgroundImage2 />
         <BackgroundImage3 />
         <WriteWrapper>
+          <WriteWallet>
+            {addr ? `wallet connected: ${addr}` : "wallet not yet connected"}
+          </WriteWallet>
+          <WriteWallet>
+            {ownerAddress ? `Owner Address: ${ownerAddress}` : ""}
+          </WriteWallet>
           <WriteTitle>Virtual Forest</WriteTitle>
           {/* <WriteBody>NFTs and Conservation</WriteBody> */}
           <WriteFooter>
-            <PlayNowButton>Play Now</PlayNowButton>
+            <Link
+              to="contribute"
+              activeClass="active"
+              spy={true}
+              smooth={true}
+              duration={500}
+              offset={-70}
+              className="transition-all duration-300"
+            >
+              <PlayNowButton>Play Now</PlayNowButton>
+            </Link>
           </WriteFooter>
         </WriteWrapper>
       </Section>

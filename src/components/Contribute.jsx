@@ -1,7 +1,9 @@
-import React from "react";
 import styled from "styled-components";
 import Collectibles from "./Collectibles";
 import Landing from "../landing.jsx";
+import { useContext, useState } from "react";
+import SetContractContext from "../context/SetContractContext";
+import Loader from "./Loader";
 
 const Section = styled.div`
   height: 100vh;
@@ -172,8 +174,20 @@ const GeneralSectionDivDiv3Button = styled.button`
   letter-spacing: 2px;
 `;
 
+const StyledInput = styled.input`
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  outline: none;
+  background-color: #ffffff;
+  color: #333;
+  width: 120px;
+`;
+
 const GeneralSectionDivDiv4 = styled.div`
   flex: 1;
+  margin-top: 20px;
 `;
 
 const MapSection = styled.div`
@@ -255,9 +269,16 @@ const ThreeMapModel = styled.div`
 `;
 
 function Contribute() {
+  const [loader, setLoader] = useState(false);
+  const [waterLoader, setWaterLoader] = useState(false);
+  const [selectedTokenId, setSelectedTokenId] = useState("");
+  const [manureLoader, setManureLoader] = useState(false);
+  //take contract set function from SetContractContext
+  const { getSeed, giveWater, applyManure } = useContext(SetContractContext);
+
   return (
     <>
-      <Section>
+      <Section id="contribute">
         <GeneralSection>
           <GenralSectionWrapper>
             <GeneralSectionDiv>
@@ -269,8 +290,9 @@ function Contribute() {
                 <DivDivAddButton>+</DivDivAddButton>
               </GeneralSectionDivDiv3>
               <GeneralSectionDivDiv4>
-                <GeneralSectionDivDiv3Button>
-                  Plant Seed
+                <GeneralSectionDivDiv3Button onClick={() => getSeed(setLoader)}>
+                  {loader && <Loader />}{" "}
+                  <span style={{ marginLeft: "5px" }}>Plant Seed</span>
                 </GeneralSectionDivDiv3Button>
               </GeneralSectionDivDiv4>
             </GeneralSectionDiv>
@@ -282,14 +304,29 @@ function Contribute() {
             <GeneralSectionDiv>
               <GeneralSectionDivDiv1>Water</GeneralSectionDivDiv1>
               <GeneralSectionDivDiv2>Refills days</GeneralSectionDivDiv2>
-              <GeneralSectionDivDiv3>
+              {/* <GeneralSectionDivDiv3>
                 <DivDivsubButton>-</DivDivsubButton>
                 <DivDivValue>1</DivDivValue>
                 <DivDivAddButton>+</DivDivAddButton>
-              </GeneralSectionDivDiv3>
+              </GeneralSectionDivDiv3> */}
+              <StyledInput
+                type="number"
+                placeholder="Enter Token Id"
+                value={selectedTokenId}
+                onChange={(e) => setSelectedTokenId(e.target.value)}
+              />
               <GeneralSectionDivDiv4>
-                <GeneralSectionDivDiv3Button>
-                  Water Plant
+                <GeneralSectionDivDiv3Button
+                  onClick={() =>
+                    giveWater(
+                      setWaterLoader,
+                      selectedTokenId,
+                      setSelectedTokenId
+                    )
+                  }
+                >
+                  {waterLoader && <Loader />}{" "}
+                  <span style={{ marginLeft: "5px" }}>Water Plant</span>
                 </GeneralSectionDivDiv3Button>
               </GeneralSectionDivDiv4>
             </GeneralSectionDiv>
@@ -307,8 +344,11 @@ function Contribute() {
                 <DivDivAddButton>+</DivDivAddButton>
               </GeneralSectionDivDiv3>
               <GeneralSectionDivDiv4>
-                <GeneralSectionDivDiv3Button>
-                  Speed Up
+                <GeneralSectionDivDiv3Button
+                  onClick={() => applyManure(setManureLoader)}
+                >
+                  {manureLoader && <Loader />}{" "}
+                  <span style={{ marginLeft: "5px" }}>Speed up</span>
                 </GeneralSectionDivDiv3Button>
               </GeneralSectionDivDiv4>
             </GeneralSectionDiv>

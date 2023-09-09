@@ -82,8 +82,12 @@ function Landing() {
 
     function createPoints(lat, lng) {
       const points = new THREE.Mesh(
-        new THREE.BoxGeometry(0.1, 0.1, 0.1),
-        new THREE.MeshBasicMaterial({ color: "#A2FF86" })
+        new THREE.BoxGeometry(0.2, 0.2, 0.8),
+        new THREE.MeshBasicMaterial({
+          color: "#A2FF86",
+          transparent: true,
+          opacity: 0.5,
+        })
       ); //create sphere object with Mesh Ggeometry and Custom ShaderMaterial
 
       //mexico 23.6345° N, 102.5528° W
@@ -94,8 +98,14 @@ function Landing() {
       const x = radius * Math.cos(latitude) * Math.sin(longitude);
       const y = radius * Math.sin(latitude);
       const z = radius * Math.cos(latitude) * Math.cos(longitude);
+      points.position.x = x;
+      points.position.y = y;
+      points.position.z = z;
 
       points.lookAt(0, 0, 0);
+      points.geometry.applyMatrix4(
+        new THREE.Matrix4().makeTranslation(0, 0, -0.4)
+      );
 
       points.position.set(x, y, z);
 
@@ -103,9 +113,7 @@ function Landing() {
       // points.geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0.1, 0.1, 0.1));
       gsap.to(points.scale, {
         //scaling animation to points using gsap
-        z: 2,
-        y: 2,
-        x: 2,
+        z: 1.4,
         duration: 1,
         yoyo: true,
         repeat: -1,
@@ -134,8 +142,13 @@ function Landing() {
     //raycaster
 
     const raycaster = new THREE.Raycaster();
-    console.log(raycaster);
-    console.log(group.children);
+    const popupEl = document.getElementById("popupEl");
+    console.log(popupEl);
+    // console.log(raycaster);
+    // console.log(group.children);
+    // console.log(
+    //   group.children.filter((mesh) => mesh.geometry.type === "BoxGeometry")
+    // );
 
     function animate() {
       requestAnimationFrame(animate);
@@ -153,10 +166,25 @@ function Landing() {
       raycaster.setFromCamera(mouse, camera);
 
       // calculate objects intersecting the picking ray
-      const intersects = raycaster.intersectObjects(group.children);
+      const intersects = raycaster.intersectObjects(
+        group.children.filter((mesh) => mesh.geometry.type === "BoxGeometry")
+      );
+
+      group.children.forEach((mesh) => {
+        if (mesh.geometry.type === "BoxGeometry") {
+          mesh.material.opacity = 0.5;
+        }
+      });
+
+      gsap.set(popupEl, {
+        display: "none",
+      });
+
       for (let i = 0; i < intersects.length; i++) {
-        console.log("GG");
-        // intersects[ i ].object.material.color.set( 0xff0000 );
+        intersects[i].object.material.opacity = 1;
+        gsap.set(popupEl, {
+          display: "block",
+        });
       }
 
       renderer.render(scene, camera);
@@ -184,14 +212,15 @@ function Landing() {
 
     const handleMouseMove = (event) => {
       //track mouse movement using event listner
-      mouse.x =
-        ((event.clientX - (2 * window.innerWidth) / 5) /
-          (window.innerWidth / 2)) *
-          2 -
-        1;
-      console.log(event.clientX - (2 * window.innerWidth) / 5);
-      console.log(mouse.x);
+      mouse.x = ((event.clientX - innerWidth / 2) / (innerWidth / 2)) * 2 - 1;
+      // console.log(mouse.x);
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      // console.log(mouse.y);
+
+      gsap.set(popupEl, {
+        x: event.clientX - 1150,
+        y: event.clientY - 400,
+      });
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -203,7 +232,23 @@ function Landing() {
     };
   }, []);
 
-  return <div id="right" style={{ width: "100%", height: "100%" }}></div>;
+  return (
+    <>
+      <div
+        id="popupEl"
+        style={{
+          background: "black",
+          opacity: "0.8",
+          position: "absolute",
+          padding: "8px",
+        }}
+      >
+        <h2 style={{ color: "white" }}>Heelo</h2>
+        <p style={{ color: "white" }}>Hey</p>
+      </div>
+      <div id="right" style={{ width: "100%", height: "100%" }}></div>
+    </>
+  );
 }
 
 export default Landing;

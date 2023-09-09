@@ -321,15 +321,15 @@ function Contribute() {
         </GeneralSection>
         <MapSection>
           <RightBanner>
-            <ModeChanger>
+            {/* <ModeChanger>
               <ModeChangerDiv>User Map</ModeChangerDiv>
               <ModeChangerDiv>World Map</ModeChangerDiv>
-            </ModeChanger>
+            </ModeChanger> */}
             <ThreeMapModel>
               <Landing />
             </ThreeMapModel>
           </RightBanner>
-          <LeftBanner>Contribute</LeftBanner>
+          {/* <LeftBanner>Contribute</LeftBanner> */}
         </MapSection>
       </Section>
       <Collectibles />

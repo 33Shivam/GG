@@ -8,7 +8,6 @@ const Section = styled.div`
   height: 760px;
   display: flex;
   background: linear-gradient(#dcffe3, #4e633c);
-
   justify-content: center;
   align-items: center;
 `;

@@ -67,7 +67,7 @@ const NavElement = styled.div`
     background: #3d4917;
   }
 `;
-const ButtonConnect = styled.div`
+const ButtonConnect = styled.button`
   width: 100px;
   height: 30px;
 `;
@@ -83,6 +83,7 @@ const NavBar = () => {
   function handleClick(event) {
     navigate("/Dashboard");
   }
+
   return (
     <NavHeader>
       <NavLogo></NavLogo>
